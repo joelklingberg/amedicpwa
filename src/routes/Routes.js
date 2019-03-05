@@ -32,7 +32,7 @@ export const Routes = () => {
                 </Route>
                 <Route exact path="/patient" component={PatientFind} />
                 <Route path="/patient/:id" component={ViewPatient} />
-                <Route path="/hsavisit/:patientID/:diagnosisID/:hsaID/:symptomID" component={ViewVisit} />
+                <Route path="/visit/:id" component={ViewVisit} />
                 <Route path="/hevisit/:patientID/:diagnosisID/:heID" component={ViewVisit} />
 
             </Switch>

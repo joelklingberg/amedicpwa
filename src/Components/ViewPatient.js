@@ -2,7 +2,7 @@ import React from 'react'
 import {Container, Table, Button} from 'react-bootstrap'
 import {Link} from 'react-router-dom'
 
-import HSAVisitTD from './HSAVisitTD'
+import VisitTD from './VisitTD'
 import HEVisitTD from './HEVisitTD'
 import ScreeningForm from './ScreeningForm'
 import { Redirect } from 'react-router-dom'
@@ -16,12 +16,11 @@ class ViewPatient extends React.Component {
             patient: {},
             caregivers: null,
             village: {},
-            HSA_visits: null,
-            HE_visits: null
+            visits: null
         }
 
         this.printOutCaregivers = this.printOutCaregivers.bind(this)
-        this.printOutHSAVisits = this.printOutHSAVisits.bind(this)
+        this.printOutVisits = this.printOutVisits.bind(this)
         this.Auth = new AuthService()
         
     }
@@ -40,21 +39,30 @@ class ViewPatient extends React.Component {
         }
     }
 
-    printOutHSAVisits() {
+    printOutVisits() {
 
         // Loop through array, printing out each visit.
-        if(this.state.HSA_visits != null) {
-            return this.state.HSA_visits.map(function(visit) {
+        /* TODO: Fix HSA_visits to use the new visit model. */
+        if(this.state.visits != null) {
+          let visitsArray = this.state.visits
+          visitsArray.sort(function(a,b){
+            // Turn your strings into dates, and then subtract them
+            // to get a value that is either negative, positive, or zero.
+            return new Date(b.timestamp) - new Date(a.timestamp);
+          });
+            return this.state.visits.map(function(visit) {
                 return(
-                    <HSAVisitTD visit={visit} key={visit.patientID + visit.diagnosisID + visit.HSAID + visit.symptomID} />
+                    <VisitTD visit={visit} key={visit.patient_id + visit.diagnosis_id + visit.user_id + visit.symptoms_sheet_id} />
                 )
             })
         }
+        
     }
 
     printOutHEVisits() {
 
       // Loop through array, printing out each visit.
+      /* TODO: Fix HE_visits to just use the new visit model.
       if(this.state.HE_visits != null) {
           return this.state.HE_visits.map(function(visit) {
               return(
@@ -62,6 +70,7 @@ class ViewPatient extends React.Component {
               )
           })
       }
+      */
   }
 
     componentDidMount(){
@@ -70,7 +79,6 @@ class ViewPatient extends React.Component {
         this.Auth.fetch(`http://localhost:3000/patient/${this.props.match.params.id}`)
         .then(
           (fetchedPatient) => {
-              console.log(fetchedPatient)
               this.setState({
               patient: fetchedPatient
             });
@@ -95,26 +103,12 @@ class ViewPatient extends React.Component {
             })
           })
 
-        // Fetch patient hsa visits array.
-        this.Auth.fetch(`http://localhost:3000/hsavisit/${this.props.match.params.id}`)
+        // Fetch patient visits array via patient ID.
+        this.Auth.fetch(`http://localhost:3000/visit/patient/${this.props.match.params.id}`)
         .then(
-          (fetchedHSAVisits) => {
+          (fetchedVisits) => {
               this.setState({
-              HSA_visits: fetchedHSAVisits
-            });
-          },
-          (error) => {
-            this.setState({
-              error
-            })
-          })
-          
-        // Fetch patient he visits array.
-        this.Auth.fetch(`http://localhost:3000/hevisit/${this.props.match.params.id}`)
-        .then(
-          (fetchedHEVisits) => {
-              this.setState({
-              HE_visits: fetchedHEVisits
+              visits: fetchedVisits
             });
           },
           (error) => {
@@ -134,11 +128,11 @@ class ViewPatient extends React.Component {
 
             <h2>Patient details</h2>
             <p><b>Name: </b>{this.state.patient.name}</p>
-            <p><b>Date of birth: </b>{this.state.patient.dateOfBirth}</p>
-            <p><b>Mobile No: </b>{this.state.patient.mobileNo}</p>
-            <p><b>National ID: </b>{this.state.patient.nationalID}</p>
+            <p><b>Date of birth: </b>{this.state.patient.date_of_birth}</p>
+            <p><b>Mobile No: </b>{this.state.patient.mobile_no}</p>
+            <p><b>National ID: </b>{this.state.patient.national_id}</p>
             <p><b>Sex: </b>{this.state.patient.sex}</p>
-            <p><b>Village: </b>{this.state.patient.villageName}</p>
+            <p><b>Village: </b>{this.state.patient.village_name}</p>
 
             <div>
             {
@@ -153,38 +147,22 @@ class ViewPatient extends React.Component {
               <br /><br />
             </div>
 
-            <h2>HSA visits</h2>
+            <h2>Visits</h2>
             <Table>
 
                 <thead>
                     <tr>
                         <th>Date</th>
+                        { /*
                         <th>Diagnosis?</th>
                         <th>Treatment?</th>
+                        */ }
                     </tr>
                 </thead>
 
                 {
-                // Check if patient has HSA visits, if so, print out visits, else don't.
-                this.printOutHSAVisits()
-                }
-
-            </Table>
-
-            <h2>HE visits</h2>
-            <Table>
-
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Diagnosis?</th>
-                        <th>Treatment?</th>
-                    </tr>
-                </thead>
-
-                {
-                // Check if patient has HE visits, if so, print out visits, else don't.
-                this.printOutHEVisits()
+                // Check if patient has visits, if so, print out visits, else don't.
+                this.printOutVisits()
                 }
 
             </Table>

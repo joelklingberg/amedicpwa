@@ -16,32 +16,35 @@ class HSAVisitTD extends React.Component {
             <tbody>
                         <tr>
                             <td>
-                                <Link to={`/hsavisit/${visit.patientID}/${visit.diagnosisID}/${visit.HSAID}/${visit.symptomID}`}>
+                                <Link to={`/visit/${visit.id}`}>
                                 {visit.timestamp === null ? 'Unknown' : visit.timestamp}
                                 </Link>
                             </td>
+                            {/*
                             <td>
-                                <Link to={`/hsavisit/${visit.patientID}/${visit.diagnosisID}/${visit.HSAID}/${visit.symptomID}`}>
-                                {visit.diagnosisID === null ? 'No' : 'Yes'}
+                            <Link to={`/visit/${visit.id}`}>
+                                {visit.diagnosis_id === null ? 'No' : 'Yes'}
                                 </Link>
                             </td>
                             <td>
-                                <Link to={`/hsavisit/${visit.patientID}/${visit.diagnosisID}/${visit.HSAID}/${visit.symptomID}`}>
+                                <Link to={`/visit/${visit.id}`}>
                                 {this.state.hasTreatment === false ? 'No' : 'Yes'}
                                 </Link>
                             </td>
+                            */}
                         </tr>
                     </tbody>
         )
     }
 
     componentDidMount(){
-        // get all treatmentdiagnosis matching visit.diagnosisID
-        // if length is < 1, there are no treatments
-        fetch(`http://localhost:3000/treatmentdiagnosis/${this.props.visit.diagnosisID}`).then(res => res.json())
+        console.log(this.props.visit)
+        /*
+        // get all treatmentdiagnosis matching visit.diagnosis_id
+        fetch(`http://localhost:3000/treatmentdiagnosis/${this.props.visit.diagnosis_id}`).then(res => res.json())
         .then(
           (fetchedTreatmentDiagnosis) => {
-
+            // if length is < 1, there are no treatments
             if(fetchedTreatmentDiagnosis.length > 0) {
                 this.setState({hasTreatment: true})
             }
@@ -51,7 +54,9 @@ class HSAVisitTD extends React.Component {
               error
             })
           })  
+          */
     }
+    
 }
 
 export default HSAVisitTD

@@ -1,5 +1,7 @@
 import React from 'react'
 import {Button} from 'react-bootstrap'
+import AuthService from './AuthService';
+import {Link} from 'react-router-dom'
 
 class reviewForm extends React.Component {
 
@@ -7,6 +9,7 @@ class reviewForm extends React.Component {
         super()
         this.state = {}
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.Auth = new AuthService()
     }
     
 
@@ -29,7 +32,7 @@ class reviewForm extends React.Component {
                 cannot_eat_drink: passedForm.cannotEatDrink,              // BOOL
                 vomiting: passedForm.vomiting,                          // BOOL
                 vomits_everything: passedForm.vomitsEverything,          // BOOL
-                redEyes: passedForm.redEyes,                            // BOOL
+                red_eyes: passedForm.redEyes,                            // BOOL
                 red_eyes_days: passedForm.redEyesDays,                    // INT
                 difficulties_to_see: passedForm.difficultiesToSee,        // BOOL
                 difficulties_to_see_days: passedForm.difficultiesToSeeDays,// INT
@@ -40,24 +43,50 @@ class reviewForm extends React.Component {
                 palmar_palor: passedForm.palmarPalor,                    // VARCHAR
                 muac: passedForm.muac,                                  // VARCHAR
                 swollen_feet: passedForm.swollenFeet,                    // VARCHAR
-        }
-        
-        /*
-        fetch('http://localhost:3000/symptoms/', {
 
+                submittedForm: false
+        }
+
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; // Be careful! January is 0.
+        var yyyy = today.getFullYear();
+        var hh = today.getHours()
+        var mi = today.getMinutes()
+
+        if(dd<10) {
+            dd = '0'+dd
+        } 
+
+        if(mm<10) {
+            mm = '0'+mm
+        } 
+
+        today = yyyy + '/' + mm + '/' + dd + " " + hh + ":" + mi;
+
+        let visit = {
+            symptoms_sheet: postForm,
+            patient_id: this.props.location.patient.ID,
+            timestamp: today,
+            login_id: this.Auth.getUsername()
+        }
+
+        this.Auth.fetch('http://localhost:3000/evaluate/', {
             method: 'POST',
             headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
             },
-            body: JSON.stringify(postForm)
+            body: JSON.stringify(visit)
+        }).then(response => {
+            this.props.history.push(`/visit/${response.id}`);
         })
-        */
+        
 
         // TODO: Implement check for errors here.
         
         // TODO: Implemented redirect to view the visit:
-        this.props.history.push('/patient');
+        //this.props.history.push(`/patient/${this.props.location.patient.ID}`);
     }
 
     render() {
@@ -65,6 +94,9 @@ class reviewForm extends React.Component {
             <div class="container">
             
                 <h1>Review entries</h1>
+
+                <h4>Patient</h4>
+                <p>{this.props.location.patient.name}</p>
 
                 <h5>Description</h5>
                 <p>{this.props.location.alafForm.description}</p>
@@ -137,6 +169,12 @@ class reviewForm extends React.Component {
 
                 <h5>Does the patient have swollen feet?</h5>
                 <p>{this.props.location.alafForm.swollenFeet}</p>
+
+                <Link to={{ pathname:'/alaf/', state: { patient: this.props.location.patient, alafForm: this.props.location.alafForm } }}>
+                    <Button className="float-left" variant="secondary">
+                        Back to edit form
+                    </Button>
+                </Link>
 
                 <Button className="float-right" variant="primary" type="submit" onClick={this.handleSubmit}>
                         Submit form
