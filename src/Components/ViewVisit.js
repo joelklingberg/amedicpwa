@@ -17,7 +17,8 @@ class ViewVisit extends React.Component {
             diagnoses: [],
             treatments: [],           
             symptoms: null,
-            patient_id: null
+            patient_id: null,
+            patient: null
             
         }
         this.printOutDiagnoses = this.printOutDiagnoses.bind(this)
@@ -171,7 +172,12 @@ class ViewVisit extends React.Component {
                 }
 
                 <div class="text-center">
-                <Link to={{ pathname:`/patient/${this.state.patient_id}` }}><Button variant="primary">Go to patient page</Button></Link>
+                { this.state.patient != null ?
+                    <Link to={{ pathname:`/patient/${this.state.patient.national_id}` }}>
+                        <Button variant="primary">Go to patient page</Button>
+                    </Link> : '' 
+                }
+                
                 <br /><br />
                 </div>
                 
@@ -200,6 +206,20 @@ class ViewVisit extends React.Component {
                 this.setState({
                     patient_id: fetchedVisit[0].patient_id
                 })
+
+                this.Auth.fetch(`http://localhost:3000/patient/${fetchedVisit[0].patient_id}`)
+        .then(
+          (fetchedPatient) => {
+              this.setState({
+              patient: fetchedPatient
+            })
+
+          },
+          (error) => {
+            this.setState({
+              error
+            })
+          })
                
             },
             (error) => {

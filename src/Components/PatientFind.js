@@ -26,7 +26,7 @@ class PatientFind extends React.Component {
     handleSubmit(event) {
 
         // Gretchen, stop trying to make fetch happen! It's not going to happen!
-        this.Auth.fetch(`http://localhost:3000/patient/${this.state.nationalID}`)
+        this.Auth.fetch(`http://localhost:3000/patient/nationalid/${this.state.nationalID}`)
         .then(
           (result) => {
               console.log(result)

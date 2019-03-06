@@ -401,7 +401,7 @@ class ScreeningForm extends React.Component {
                         /> 
                     </Form.Group>
 
-                    <Link to={{ pathname:`/patient/${this.state.patient.ID}` }}>
+                    <Link to={{ pathname:`/patient/${this.state.patient.national_id}` }}>
                         <Button className="float-left" variant="secondary" type="submit">
                             Back to patient
                         </Button>

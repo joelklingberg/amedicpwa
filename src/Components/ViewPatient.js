@@ -76,12 +76,41 @@ class ViewPatient extends React.Component {
     componentDidMount(){
 
         // Fetch patient object.
-        this.Auth.fetch(`http://localhost:3000/patient/${this.props.match.params.id}`)
+        this.Auth.fetch(`http://localhost:3000/patient/nationalid/${this.props.match.params.id}`)
         .then(
           (fetchedPatient) => {
               this.setState({
               patient: fetchedPatient
-            });
+            })
+
+            // Fetch patient visits array via patient ID.
+            this.Auth.fetch(`http://localhost:3000/visit/patient/${this.state.patient.ID}`)
+            .then(
+              (fetchedVisits) => {
+                  this.setState({
+                  visits: fetchedVisits
+                });
+              },
+              (error) => {
+                this.setState({
+                  error
+                })
+              })
+
+              // Fetch patient caregiver object.
+              this.Auth.fetch(`http://localhost:3000/caregiver/${this.state.patient.ID}`)
+              .then(
+                (fetchedCaregiver) => {
+                    this.setState({
+                    caregivers: fetchedCaregiver
+                  });
+                },
+                (error) => {
+                  this.setState({
+                    error
+                  })
+                })
+
           },
           (error) => {
             this.setState({
@@ -89,33 +118,13 @@ class ViewPatient extends React.Component {
             })
           })
 
-        // Fetch patient caregiver object.
-        this.Auth.fetch(`http://localhost:3000/caregiver/${this.props.match.params.id}`)
-        .then(
-          (fetchedCaregiver) => {
-              this.setState({
-              caregivers: fetchedCaregiver
-            });
-          },
-          (error) => {
-            this.setState({
-              error
-            })
-          })
+        
 
-        // Fetch patient visits array via patient ID.
-        this.Auth.fetch(`http://localhost:3000/visit/patient/${this.props.match.params.id}`)
-        .then(
-          (fetchedVisits) => {
-              this.setState({
-              visits: fetchedVisits
-            });
-          },
-          (error) => {
-            this.setState({
-              error
-            })
-          })
+        
+
+    }
+
+    fetchPatientVisits() {
 
     }
 
