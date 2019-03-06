@@ -15,12 +15,14 @@ class ViewPatient extends React.Component {
         this.state = {
             patient: {},
             caregivers: null,
+            caregiverpatient: [],
             village: {},
             visits: null
         }
 
         this.printOutCaregivers = this.printOutCaregivers.bind(this)
         this.printOutVisits = this.printOutVisits.bind(this)
+        this.fetchCaregivers = this.fetchCaregivers.bind(this)
         this.Auth = new AuthService()
         
     }
@@ -31,8 +33,11 @@ class ViewPatient extends React.Component {
             return this.state.caregivers.map(function(caregiver){
                 return (
                 <div key={caregiver.ID}>
+                <hr />
                 <p><b>Caregiver name: </b>{caregiver.name}</p>
-                <p><b>Caregiver relation to patient: </b>{caregiver.relationToPatient}</p>
+                <p><b>Caregiver relation to patient: </b>{caregiver.relation_to_patient}</p>
+                <p><b>Caregiver date of birth: </b>{caregiver.date_of_birth}</p>
+                <p><b>Caregiver mobile no: </b>{caregiver.mobile_no}</p>
                 </div>
                 )
             })
@@ -97,19 +102,24 @@ class ViewPatient extends React.Component {
                 })
               })
 
-              // Fetch patient caregiver object.
-              this.Auth.fetch(`http://localhost:3000/caregiver/${this.state.patient.ID}`)
-              .then(
-                (fetchedCaregiver) => {
-                    this.setState({
-                    caregivers: fetchedCaregiver
-                  });
-                },
-                (error) => {
+            // Fetch caregiver patients
+            this.Auth.fetch(`http://localhost:3000/caregiverpatient/${this.state.patient.ID}`)
+            .then(
+              (caregiverpatient) => {
+
                   this.setState({
-                    error
-                  })
+                    caregiverpatient: caregiverpatient
                 })
+
+                this.fetchCaregivers()
+
+              },
+              (error) => {
+                this.setState({
+                  error
+                })
+              })
+
 
           },
           (error) => {
@@ -122,6 +132,35 @@ class ViewPatient extends React.Component {
 
         
 
+    }
+
+    fetchCaregivers() {
+      console.log(this.state.caregiverpatient)
+
+      let caregiverArray = []
+
+      this.state.caregiverpatient.map((caregiverpatient) =>{
+                  
+        // Fetch patient caregiver object.
+        this.Auth.fetch(`http://localhost:3000/caregiver/${caregiverpatient.caregiver_id}`)
+        .then(
+          
+          (fetchedCaregiver) => {
+            console.log(fetchedCaregiver)
+            caregiverArray.push(fetchedCaregiver[0])
+            
+              this.setState({
+              caregivers: caregiverArray
+            })
+            
+          },
+          (error) => {
+            this.setState({
+              error
+            })
+          })
+
+      })
     }
 
     fetchPatientVisits() {
