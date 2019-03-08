@@ -66,15 +66,14 @@ class ViewVisit extends React.Component {
     fetchTreatments(diagnosis_id) {
         // Fetch treatmentdiagnosis
         if(this.state.visit != null) {
-            fetch(`http://localhost:3000/treatmentdiagnosis/${diagnosis_id}`)
-        .then(res => res.json())
+            this.Auth.fetch(`http://localhost:3000/treatmentdiagnosis/${diagnosis_id}`)
         .then(
             (fetchedTreatmentDiagnosis) => {
 
                 // Fetch treatments
                 fetchedTreatmentDiagnosis.map((treatmentdiagnosis) => {
                     // Should push each treatment into the state treatment array.
-                    fetch(`http://localhost:3000/treatment/${treatmentdiagnosis.treatment_id}`).then(res => res.json())
+                    this.Auth.fetch(`http://localhost:3000/treatment/${treatmentdiagnosis.treatment_id}`)
                 .then(
                     (fetchedTreatments) => {
                         // Change this to push each treatment into the array instead of replacing it:
@@ -103,8 +102,7 @@ class ViewVisit extends React.Component {
     fetchDiagnoses(diagnosis_id) {
         if(this.state.visit != null) {
             // Fetch diagnosis
-            fetch(`http://localhost:3000/diagnosis/${diagnosis_id}`)
-            .then(res => res.json())
+            this.Auth.fetch(`http://localhost:3000/diagnosis/${diagnosis_id}`)
             .then(
                 (fetchedDiagnoses) => {
                     this.setState({
@@ -124,7 +122,7 @@ class ViewVisit extends React.Component {
     fetchSymptoms(symptoms_sheet_id) {
         if(this.state.visit != null) {
             // Fetch symptom sheet
-            fetch(`http://localhost:3000/symptoms/${symptoms_sheet_id}`).then(res => res.json())
+            this.Auth.fetch(`http://localhost:3000/symptoms/${symptoms_sheet_id}`)
             .then(
                 (fetchedSymptoms) => {
                     this.setState({

@@ -11,7 +11,7 @@ class PatientFind extends React.Component {
     constructor(props) {
         super()
         this.state = {
-            nationalID: '',
+            national_id: '',
             createPatient: false,
             foundPatient: null
         }
@@ -26,7 +26,7 @@ class PatientFind extends React.Component {
     handleSubmit(event) {
 
         // Gretchen, stop trying to make fetch happen! It's not going to happen!
-        this.Auth.fetch(`http://localhost:3000/patient/nationalid/${this.state.nationalID}`)
+        this.Auth.fetch(`http://localhost:3000/patient/nationalid/${this.state.national_id}`)
         .then(
           (result) => {
               console.log(result)
@@ -75,8 +75,8 @@ class PatientFind extends React.Component {
                     <Form.Group controlId="formNationalID">
                         <Form.Label>Find patient via National ID</Form.Label>
                         <Form.Control 
-                            name="nationalID" 
-                            value={this.state.nationalID} 
+                            name="national_id" 
+                            value={this.state.national_id} 
                             onChange={this.handleStudyIDChange} 
                             type="number"
                             placeholder="Enter national ID"
@@ -89,7 +89,7 @@ class PatientFind extends React.Component {
 
                 {
                    this.state.foundPatient === null ? '' : <Redirect to={{
-                    pathname: `/patient/${this.state.nationalID}`
+                    pathname: `/patient/${this.state.national_id}`
                     }}
                     />
                 }
@@ -98,7 +98,7 @@ class PatientFind extends React.Component {
 
                 <CreatePatient 
                     createPatient={this.state.createPatient}
-                    nationalID={this.state.nationalID}
+                    national_id={this.state.national_id}
                 />
 
                 
